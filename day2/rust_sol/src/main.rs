@@ -1,6 +1,5 @@
 use std::fs;
 
-#[derive(Debug)]
 struct Game {
     id: u32,
     sets: Vec<Set>,
@@ -12,7 +11,6 @@ impl Game {
     }
 }
 
-#[derive(Debug)]
 struct Set {
     red: u32,
     green: u32,
@@ -36,7 +34,18 @@ fn main() {
         .map(|game| game.id)
         .sum();
 
+    let answer_two: u32 = games.iter().map(|game| get_power_set(&game)).sum();
+
     println!("Answer 1: {answer}");
+    println!("Answer 2: {answer_two}");
+}
+
+fn get_power_set(game: &Game) -> u32 {
+    let max_red = game.sets.iter().map(|set| set.red).max().unwrap_or(0);
+    let max_green = game.sets.iter().map(|set| set.green).max().unwrap_or(0);
+    let max_blue = game.sets.iter().map(|set| set.blue).max().unwrap_or(0);
+
+    max_red * max_green * max_blue
 }
 
 fn is_game_possible(game: &Game, bag: &Set) -> bool {
