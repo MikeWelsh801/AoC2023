@@ -7,7 +7,7 @@ if [ ! -d $path ]; then
     echo "Please enter file with rust solution."
 else
     cd $path
-    cargo run
+    cargo run --release
     cd ../..
 fi
     
