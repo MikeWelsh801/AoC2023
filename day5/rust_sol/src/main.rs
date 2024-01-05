@@ -21,7 +21,7 @@ fn main() {
 
     println!("Answer 1: {answer_one}");
 
-    // search through all possible locations until it finds a one that matches a
+    // search through all possible locations until it finds one that matches a
     // seed (first found is minimum)
     for location in 0..u64::MAX {
         let seed = map_to_seed(location, &table);
