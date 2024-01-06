@@ -67,18 +67,17 @@ pub fn map_to_location(seed: u64, table: &MapTable) -> u64 {
     let light = get_dest(water, &table.water_to_light);
     let temp = get_dest(light, &table.light_to_temp);
     let humidity = get_dest(temp, &table.temp_to_humitidy);
-    get_dest(humidity, &table.humidity_to_location)
+    get_dest(humidity, &table.humidity_to_location) // location
 }
 
-pub fn map_to_seed(location: u64, table: &MapTable) -> u64 {
+fn map_to_seed(location: u64, table: &MapTable) -> u64 {
     let humitity = get_src(location, &table.humidity_to_location);
     let temp = get_src(humitity, &table.temp_to_humitidy);
     let light = get_src(temp, &table.light_to_temp);
     let water = get_src(light, &table.water_to_light);
     let fertilizer = get_src(water, &table.fertilizer_to_water);
     let soil = get_src(fertilizer, &table.soil_to_fertilizer);
-    // seed
-    get_src(soil, &table.seed_to_soil)
+    get_src(soil, &table.seed_to_soil) // seed
 }
 
 fn get_src(dest: u64, source_maps: &[Mapping]) -> u64 {
@@ -177,7 +176,19 @@ pub fn parse_seeds(seeds: &str) -> Vec<u64> {
         .collect()
 }
 
-pub fn valid_seed(seed: u64, seed_range: &[Range]) -> bool {
+pub fn find_min_location(seed_range: &[Range], table: &MapTable) -> Option<u64> {
+    // search through all possible locations until it finds one that matches a
+    // seed (first found is minimum)
+    for location in 0..u64::MAX {
+        let seed = map_to_seed(location, &table);
+        if valid_seed(seed, &seed_range) {
+            return Some(location);
+        }
+    }
+    return None;
+}
+
+fn valid_seed(seed: u64, seed_range: &[Range]) -> bool {
     if let Some(_) = seed_range
         .iter()
         .find(|range| seed >= range.start && seed < range.end)

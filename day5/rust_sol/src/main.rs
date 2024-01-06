@@ -1,5 +1,5 @@
 use rust_sol::{
-    map_to_location, map_to_seed, parse_map_table, parse_seed_range, parse_seeds, valid_seed,
+    find_min_location, map_to_location, parse_map_table, parse_seed_range, parse_seeds,
 };
 use std::fs;
 
@@ -21,13 +21,8 @@ fn main() {
 
     println!("Answer 1: {answer_one}");
 
-    // search through all possible locations until it finds one that matches a
-    // seed (first found is minimum)
-    for location in 0..u64::MAX {
-        let seed = map_to_seed(location, &table);
-        if valid_seed(seed, &seed_range) {
-            println!("Answer 2: {location}");
-            break;
-        }
+    match find_min_location(&seed_range, &table) {
+        Some(answer_two) => println!("Answer 2: {answer_two}"),
+        None => println!("No valid location found!"),
     }
 }
