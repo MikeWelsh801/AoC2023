@@ -10,17 +10,15 @@ impl Race {
     pub fn new(time: u64, distance: u64) -> Self {
         Race { time, distance }
     }
-}
 
-pub fn ways_to_win(race: &Race) -> u64 {
-    (0..=race.time)
-        .filter(|hold_time| get_distance(*hold_time, race.time) > race.distance)
-        .count() as u64
-}
-
-fn get_distance(hold_time: u64, time: u64) -> u64 {
-    let time_to_run = time - hold_time;
-    hold_time * time_to_run
+    pub fn ways_to_win(&self) -> u64 {
+        (0..=self.time)
+            .filter(|hold_time| {
+                let time_to_run = self.time - hold_time;
+                hold_time * time_to_run > self.distance // hold time is also speed
+            })
+            .count() as u64
+    }
 }
 
 pub fn parse_input(input: &str) -> Vec<Race> {
