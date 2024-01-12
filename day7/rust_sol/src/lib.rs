@@ -23,21 +23,41 @@ impl Hand {
     /// * `cards`: a vec of Card enums
     fn get_kind(cards: &[Card]) -> u8 {
         let mut found: HashMap<Card, u8> = HashMap::new();
+        let mut wilds = 0;
         cards.iter().for_each(|card| {
-            if !found.contains_key(card) {
+            if *card == Card::Wild {
+                wilds += 1;
+            } else if !found.contains_key(card) {
                 found.insert(card.clone(), 1);
             } else {
                 *found.get_mut(card).unwrap() += 1;
             }
         });
 
-        let max = *found.values().max().unwrap();
-        match max {
+        let max = *found.values().max().unwrap_or(&0);
+        let kind = match max {
             5 | 4 => max + 1,
-            3 if found.values().len() == 2 => max + 1,
+            3 if found.values().len() == 2 && wilds == 0 => max + 1,
             3 => max,
-            2 if found.values().len() == 3 => max, // two pair
+            2 if found.values().len() == 3 && wilds == 0 => max, // two pair
+            2 if found.values().len() == 2 && wilds == 1 => max, // two pair
             2 => max - 1,
+            _ => 0,
+        };
+        if wilds == 0 {
+            return kind;
+        }
+        Self::get_wilds(kind, wilds)
+    }
+
+    fn get_wilds(kind: u8, wilds: u8) -> u8 {
+        match (kind, wilds) {
+            (6, _) => panic!("too many cards!"), // 5 of a kind and some jacks
+            (4, _) => panic!("full house and some jacks!"),
+            (5, 1) | (0, 1) => kind + wilds,
+            (3, _) | (2, 1) | (1, 1) | (0, 2) => kind + wilds + 1,
+            (1, 2) | (1, 3) | (0, 3) => kind + wilds + 2,
+            (0, 4) | (0, 5) => 6, // 0 pairs and 4 or 5 jacks (five of a kind)
             _ => 0,
         }
     }
@@ -59,6 +79,17 @@ pub enum Card {
     Q,
     K,
     A,
+}
+
+/// Returns the total winnings in from a sorted list of hands.
+///
+/// * `hands`: A sorted list of hands
+pub fn get_total_winings(hands: &[Hand]) -> u32 {
+    hands
+        .iter()
+        .enumerate()
+        .map(|(index, hand)| (index + 1) as u32 * hand.bid)
+        .sum()
 }
 
 /// parses hands from input
