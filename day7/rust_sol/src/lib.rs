@@ -65,20 +65,8 @@ impl Hand {
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
 pub enum Card {
-    Wild,
-    Two,
-    Three,
-    Four,
-    Five,
-    Six,
-    Seven,
-    Eight,
-    Nine,
-    Ten,
-    J,
-    Q,
-    K,
-    A,
+    Wild, Two, Three, Four, Five, Six,
+    Seven, Eight, Nine, Ten, J, Q, K, A,
 }
 
 /// Returns the total winnings in from a sorted list of hands.
