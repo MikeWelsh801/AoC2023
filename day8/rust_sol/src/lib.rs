@@ -80,10 +80,10 @@ pub fn parse_map(contents: &str) -> Map {
     lines.iter().skip(2).for_each(|line| {
         let parts: Vec<&str> = line.split_whitespace().collect();
 
+        let key = parts[0];
         let left = parts[2].replace("(", "").replace(",", "");
         let right = parts[3].replace(")", "");
         let node = MapNode { left, right };
-        let key = parts[0];
         graph.insert(key.to_string(), node);
     });
 

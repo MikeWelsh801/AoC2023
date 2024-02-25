@@ -1,5 +1,4 @@
 use std::fs;
-
 use rust_sol::{get_node_count, get_node_count_zend, lcm, parse_map};
 
 fn main() {
@@ -13,7 +12,6 @@ fn main() {
         .keys()
         .filter(|key| key.ends_with("A"))
         .map(|key| get_node_count_zend(key, &map))
-        .reduce(|a, b| lcm(a, b))
-        .unwrap();
+        .fold(0, |acc, x| lcm(acc, x));
     println!("Answer 2: {}", total_steps);
 }
